@@ -1,9 +1,4 @@
-﻿using Maze.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Maze.Entity;
 
 namespace Maze.Service
 {
@@ -14,6 +9,6 @@ namespace Maze.Service
         List<Level> GetAll();
         void Update(Level level);   
         void Delete(Level level);
-        
+        void IsLevelCellFree(Level level, int X, int Y);
     }
 }

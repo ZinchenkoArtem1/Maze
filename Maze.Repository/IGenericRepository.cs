@@ -1,16 +1,11 @@
-﻿using Maze.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Maze.Entity;
 
 namespace Maze.Repository
 {
-    public interface IGenericRepository<TEntity> where TEntity : AbstractModel
+    public interface IGenericRepository<TEntity, TKey> where TEntity : BaseEntity<TKey>
     {
         IEnumerable<TEntity> GetAll();
-        TEntity Read(string id);
+        TEntity Read(TKey id);
         void Create(TEntity item);
         void Delete(TEntity item);
         void Update(TEntity item);

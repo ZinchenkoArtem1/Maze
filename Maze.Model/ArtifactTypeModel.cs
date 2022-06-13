@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Maze.Model
 {
-    public class Artifact : AbstractModel
+    public class ArtifactTypeModel
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public int AdditionalPoints { get; set; }
 
-        //ToDo: write more informative 
         public override string ToString()
         {
             return "Name: " + Name;

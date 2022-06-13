@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Maze.Model\Maze.Model.csproj" />
+    <None Remove="Impl\yyp20ns0.be3~" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Maze.Entity\Maze.Entity.csproj" />
   </ItemGroup>
 
 </Project>

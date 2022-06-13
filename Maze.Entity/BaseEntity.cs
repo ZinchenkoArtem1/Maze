@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Maze.Model
+namespace Maze.Entity
 {
-    public abstract class AbstractModel
+    public abstract class BaseEntity<TKey>
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public TKey Id { get; set; }
     }
 }

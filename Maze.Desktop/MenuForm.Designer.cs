@@ -44,9 +44,10 @@
             this.HeightLbl = new System.Windows.Forms.Label();
             this.WeightLbl = new System.Windows.Forms.Label();
             this.PointsLbl = new System.Windows.Forms.Label();
-            this.DecorationsBtn = new System.Windows.Forms.Button();
+            this.DoorsBtn = new System.Windows.Forms.Button();
             this.ArtifactsBtn = new System.Windows.Forms.Button();
             this.CloseBtn = new System.Windows.Forms.Button();
+            this.WallsBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CreateLevelBtn
@@ -185,15 +186,15 @@
             this.PointsLbl.TabIndex = 15;
             this.PointsLbl.Text = "points";
             // 
-            // DecorationsBtn
+            // DoorsBtn
             // 
-            this.DecorationsBtn.Location = new System.Drawing.Point(523, 301);
-            this.DecorationsBtn.Name = "DecorationsBtn";
-            this.DecorationsBtn.Size = new System.Drawing.Size(134, 44);
-            this.DecorationsBtn.TabIndex = 16;
-            this.DecorationsBtn.Text = "Decorations";
-            this.DecorationsBtn.UseVisualStyleBackColor = true;
-            this.DecorationsBtn.Click += new System.EventHandler(this.DecorationsBtn_Click);
+            this.DoorsBtn.Location = new System.Drawing.Point(523, 300);
+            this.DoorsBtn.Name = "DoorsBtn";
+            this.DoorsBtn.Size = new System.Drawing.Size(134, 44);
+            this.DoorsBtn.TabIndex = 16;
+            this.DoorsBtn.Text = "Doors";
+            this.DoorsBtn.UseVisualStyleBackColor = true;
+            this.DoorsBtn.Click += new System.EventHandler(this.DoorsBtn_Click);
             // 
             // ArtifactsBtn
             // 
@@ -215,15 +216,26 @@
             this.CloseBtn.UseVisualStyleBackColor = true;
             this.CloseBtn.Click += new System.EventHandler(this.CloseBtn_Click);
             // 
+            // WallsBtn
+            // 
+            this.WallsBtn.Location = new System.Drawing.Point(523, 357);
+            this.WallsBtn.Name = "WallsBtn";
+            this.WallsBtn.Size = new System.Drawing.Size(134, 44);
+            this.WallsBtn.TabIndex = 36;
+            this.WallsBtn.Text = "Walls";
+            this.WallsBtn.UseVisualStyleBackColor = true;
+            this.WallsBtn.Click += new System.EventHandler(this.WallsBtn_Click);
+            // 
             // MenuForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(954, 413);
             this.ControlBox = false;
+            this.Controls.Add(this.WallsBtn);
             this.Controls.Add(this.CloseBtn);
             this.Controls.Add(this.ArtifactsBtn);
-            this.Controls.Add(this.DecorationsBtn);
+            this.Controls.Add(this.DoorsBtn);
             this.Controls.Add(this.PointsLbl);
             this.Controls.Add(this.WeightLbl);
             this.Controls.Add(this.HeightLbl);
@@ -266,8 +278,9 @@
         private Label HeightLbl;
         private Label WeightLbl;
         private Label PointsLbl;
-        private Button DecorationsBtn;
+        private Button DoorsBtn;
         private Button ArtifactsBtn;
         private Button CloseBtn;
+        private Button WallsBtn;
     }
 }

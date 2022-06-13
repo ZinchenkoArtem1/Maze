@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Maze.Model\Maze.Model.csproj" />
     <ProjectReference Include="..\Maze.Service\Maze.Service.csproj" />
   </ItemGroup>
 

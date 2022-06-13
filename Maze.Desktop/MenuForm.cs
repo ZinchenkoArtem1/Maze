@@ -1,4 +1,4 @@
-﻿using Maze.Model;
+﻿using Maze.Entity;
 using Maze.Service;
 using Maze.Service.Impl;
 
@@ -17,19 +17,22 @@ namespace Maze.Desktop
         private void MenuForm_Load(object sender, EventArgs e)
         {
             RefreshLevelsLbx();
+            Clear();
         }
 
         private void CreateLevelBtn_Click(object sender, EventArgs e)
         {
+            
             levelService.Create(new Level
             {
-                Name = NameTxb.Text,
-                Color = ColorTxb.Text,
-                Complexity = ComplexityTxb.Text,
-                Height = int.Parse(HeightTxb.Text),
-                Weight = int.Parse(WeightTxb.Text),
-                Points = int.Parse(PointsTxb.Text)
+                Name = ValidateStringTextBox(NameTxb.Text),
+                Color = ValidateStringTextBox(ColorTxb.Text),
+                Complexity = ValidateStringTextBox(ComplexityTxb.Text),
+                Height = ValidateIntTextBox(HeightTxb.Text),
+                Weight = ValidateIntTextBox(WeightTxb.Text),
+                Points = ValidateIntTextBox(PointsTxb.Text)
             });
+
             RefreshLevelsLbx();
             Clear();
         }
@@ -51,6 +54,7 @@ namespace Maze.Desktop
         private void RemoveLevelBtn_Click(object sender, EventArgs e)
         {
             levelService.Delete((Level) LevelsLbx.SelectedItem);
+
             RefreshLevelsLbx();
             Clear();
         }
@@ -58,13 +62,15 @@ namespace Maze.Desktop
         private void UpdateLevelBtn_Click(object sender, EventArgs e)
         {
             Level level = (Level) LevelsLbx.SelectedItem;
-            level.Name = NameTxb.Text;
-            level.Color = ColorTxb.Text;
-            level.Complexity = ComplexityTxb.Text;
-            level.Height = int.Parse(HeightTxb.Text);
-            level.Weight = int.Parse(WeightTxb.Text);
-            level.Points = int.Parse(PointsTxb.Text);
+            level.Name = ValidateStringTextBox(NameTxb.Text);
+            level.Color = ValidateStringTextBox(ColorTxb.Text);
+            level.Complexity = ValidateStringTextBox(ComplexityTxb.Text);
+            level.Height = ValidateIntTextBox(HeightTxb.Text);
+            level.Weight = ValidateIntTextBox(WeightTxb.Text);
+            level.Points = ValidateIntTextBox(PointsTxb.Text);
+
             levelService.Update(level);
+
             RefreshLevelsLbx();
             Clear();
         }
@@ -98,11 +104,44 @@ namespace Maze.Desktop
             Application.Exit();
         }
 
-        private void DecorationsBtn_Click(object sender, EventArgs e)
+        private void DoorsBtn_Click(object sender, EventArgs e)
         {
-            DecorationsForm decorationsForm = new DecorationsForm(this, (Level) LevelsLbx.SelectedItem);
-            decorationsForm.Show();
+            DoorsForm doorsForm = new DoorsForm(this, (Level) LevelsLbx.SelectedItem);
+            doorsForm.Show();
             this.Hide();
+        }
+
+        private void WallsBtn_Click(object sender, EventArgs e)
+        {
+            WallsForm wallsForm = new WallsForm(this, (Level)LevelsLbx.SelectedItem);
+            wallsForm.Show();
+            this.Hide();
+        }
+
+        private string ValidateStringTextBox(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                throw new Exception("Text box must be filled");
+            }
+            else
+            {
+                return text;
+            }
+        }
+
+        private int ValidateIntTextBox(string text)
+        {
+            int retNum;
+
+            bool isNum = int.TryParse(text, out retNum);
+
+            if (!isNum)
+            {
+                throw new Exception("Text box must be filled by int");
+            }
+
+            return retNum;
         }
     }
 }

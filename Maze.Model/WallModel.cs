@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 
 namespace Maze.Model
 {
-    public class Wall : Decoration
+    public class WallModel
     {
+        public string Id { get; set; }
+        public string Color { get; set; }
+        public CellModel CellModel { get; set; }
         public bool IsDanger { get; set; }
 
-        //ToDo: write more informative 
         public override string ToString()
         {
-            return "Wall {" + Cell.X + ", " + Cell.Y + "}";
+            return "Wall {" + CellModel.X + ", " + CellModel.Y + "}";
         }
     }
 }
