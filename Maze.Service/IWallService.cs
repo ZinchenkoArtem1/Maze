@@ -9,10 +9,9 @@ namespace Maze.Service
 {
     public interface IWallService
     {
-        void Create(Wall wall);
-        Wall Read(string id);
-        List<Wall> GetAll();
-        void Update(Wall wall);
-        void Delete(Wall wall);
+        void Create(Wall wall, string levelId);
+        List<Wall> GetAllByLevelId(string levelId);
+        void Update(Wall wall, string levelId);
+        void Delete(Wall wall, string levelId);
     }
 }

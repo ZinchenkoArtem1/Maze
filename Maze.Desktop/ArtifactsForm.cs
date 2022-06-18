@@ -1,4 +1,5 @@
-﻿using Maze.Entity;
+﻿using Maze.Desktop.Util;
+using Maze.Entity;
 using Maze.Service;
 using Maze.Service.Impl;
 
@@ -7,16 +8,18 @@ namespace Maze.Desktop
     public partial class ArtifactsForm : Form
     {
         private readonly MenuForm menuForm;
-        private readonly Level level;
+        private readonly string levelId;
         private readonly IArtifactTypeService artifactTypeService;
-        private readonly IArtifactService artifactService;  
+        private readonly IArtifactService artifactService;
+        private readonly ILevelService levelService;
 
-        public ArtifactsForm(MenuForm menuForm, Level level)
+        public ArtifactsForm(MenuForm menuForm, string levelId)
         {
             this.menuForm = menuForm;
-            this.level = level;
+            this.levelId = levelId;
             this.artifactTypeService = new ArtifactTypeService();
             this.artifactService = new ArtifactService();
+            this.levelService = new LevelService();
             InitializeComponent();
         }
 
@@ -27,18 +30,16 @@ namespace Maze.Desktop
             Clear();
         }
 
-        //ToDo: add check that cell x and y less that level size
         private void CreateArtifactBtn_Click(object sender, EventArgs e)
         {
             Artifact artifact = new()
             {
                 ArtifactType = (ArtifactType)ArtifactTypesLbx.SelectedItem,                
-                X = ValidateIntTextBox(WeightTxb.Text),
-                Y = ValidateIntTextBox(HeightTxb.Text),
-                Level = level
+                X = TextBoxCheckUtil.ValidateIntTextBox(WeightTxb.Text),
+                Y = TextBoxCheckUtil.ValidateIntTextBox(HeightTxb.Text)
             };
 
-            artifactService.Create(artifact);
+            artifactService.Create(artifact, levelId);
 
             RefreshArtifactsLbx();
             Clear();
@@ -59,23 +60,23 @@ namespace Maze.Desktop
         {
             Artifact artifact = (Artifact)ArtifactsLbx.SelectedItem;
 
-            level.Artifacts.Remove(artifact);
-            artifactService.Delete(artifact);
+            artifactService.Delete(artifact, levelId);
 
             RefreshArtifactsLbx();
             Clear();
         }
 
-        //ToDo: add check that cell x and y less that level size
         private void UpdateArtifactBtn_Click(object sender, EventArgs e)
         {
-            Artifact artifact = (Artifact) ArtifactsLbx.SelectedItem;
+            Artifact artifact = new()
+            {
+                Id = ((Artifact) ArtifactsLbx.SelectedItem).Id,
+                ArtifactType = (ArtifactType) ArtifactTypesLbx.SelectedItem,
+                X = TextBoxCheckUtil.ValidateIntTextBox(WeightTxb.Text),
+                Y = TextBoxCheckUtil.ValidateIntTextBox(HeightTxb.Text)
+            };
 
-            artifact.ArtifactType = (ArtifactType) ArtifactTypesLbx.SelectedItem;
-            artifact.X = ValidateIntTextBox(WeightTxb.Text);
-            artifact.Y = ValidateIntTextBox(HeightTxb.Text);
-
-            artifactService.Update(artifact);
+            artifactService.Update(artifact, levelId);
 
             RefreshArtifactsLbx();
             Clear();
@@ -84,7 +85,7 @@ namespace Maze.Desktop
         private void RefreshArtifactsLbx()
         {
             ArtifactsLbx.DataSource = null;
-            ArtifactsLbx.DataSource = level.Artifacts;
+            ArtifactsLbx.DataSource = artifactService.GetAllByLevelId(levelId);
         }
 
         private void Clear()
@@ -99,20 +100,6 @@ namespace Maze.Desktop
         {
             this.Close();
             menuForm.Show();
-        }
-
-        private int ValidateIntTextBox(string text)
-        {
-            int retNum;
-
-            bool isNum = int.TryParse(text, out retNum);
-
-            if (!isNum)
-            {
-                throw new Exception("Text box must be filled by int");
-            }
-
-            return retNum;
         }
     }
 }

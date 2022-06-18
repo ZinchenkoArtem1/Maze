@@ -15,9 +15,9 @@ namespace Maze.Service.Impl
             levelService = new LevelService();
         }
 
-        public void Create(Door door)
+        public void Create(Door door, string levelId)
         {
-            Level level = door.Level;
+            Level level = levelService.Read(levelId);
 
             if (level.Weight < door.X || level.Height < door.Y)
             {
@@ -26,27 +26,29 @@ namespace Maze.Service.Impl
             levelService.IsLevelCellFree(level, door.X, door.Y);
 
             level.Doors.Add(door);
+
+            levelService.Update(level);
             doorRepository.Create(door);
         }
 
-        public void Delete(Door door)
+        public void Delete(Door door, string levelId)
         {
-            doorRepository.Delete(door);
+            Level level = levelService.Read(levelId);
+
+            level.Doors.RemoveAll(d => d.Id.Equals(door.Id));
+
+            levelService.Update(level);
+            doorRepository.Delete(door.Id);
         }
 
-        public Door Read(string id)
+        public List<Door> GetAllByLevelId(string levelId)
         {
-            return doorRepository.Read(id);
+            return levelService.Read(levelId).Doors;
         }
 
-        public List<Door> GetAll()
+        public void Update(Door door, string levelId)
         {
-            return doorRepository.GetAll().ToList();
-        }
-
-        public void Update(Door door)
-        {
-            Level level = door.Level;
+            Level level = levelService.Read(levelId);
 
             if (level.Weight < door.X || level.Height < door.Y)
             {
@@ -54,6 +56,10 @@ namespace Maze.Service.Impl
             }
             levelService.IsLevelCellFree(level, door.X, door.Y);
 
+            level.Doors.RemoveAll(d => d.Id.Equals(door.Id));
+            level.Doors.Add(door);
+
+            levelService.Update(level);
             doorRepository.Update(door);
         }
     }

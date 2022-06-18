@@ -1,4 +1,5 @@
-﻿using Maze.Entity;
+﻿using Maze.Desktop.Util;
+using Maze.Entity;
 using Maze.Service;
 using Maze.Service.Impl;
 
@@ -25,12 +26,12 @@ namespace Maze.Desktop
             
             levelService.Create(new Level
             {
-                Name = ValidateStringTextBox(NameTxb.Text),
-                Color = ValidateStringTextBox(ColorTxb.Text),
-                Complexity = ValidateStringTextBox(ComplexityTxb.Text),
-                Height = ValidateIntTextBox(HeightTxb.Text),
-                Weight = ValidateIntTextBox(WeightTxb.Text),
-                Points = ValidateIntTextBox(PointsTxb.Text)
+                Name = TextBoxCheckUtil.ValidateStringTextBox(NameTxb.Text),
+                Color = TextBoxCheckUtil.ValidateStringTextBox(ColorTxb.Text),
+                Complexity = TextBoxCheckUtil.ValidateStringTextBox(ComplexityTxb.Text),
+                Height = TextBoxCheckUtil.ValidateIntTextBox(HeightTxb.Text),
+                Weight = TextBoxCheckUtil.ValidateIntTextBox(WeightTxb.Text),
+                Points = TextBoxCheckUtil.ValidateIntTextBox(PointsTxb.Text)
             });
 
             RefreshLevelsLbx();
@@ -61,13 +62,16 @@ namespace Maze.Desktop
 
         private void UpdateLevelBtn_Click(object sender, EventArgs e)
         {
-            Level level = (Level) LevelsLbx.SelectedItem;
-            level.Name = ValidateStringTextBox(NameTxb.Text);
-            level.Color = ValidateStringTextBox(ColorTxb.Text);
-            level.Complexity = ValidateStringTextBox(ComplexityTxb.Text);
-            level.Height = ValidateIntTextBox(HeightTxb.Text);
-            level.Weight = ValidateIntTextBox(WeightTxb.Text);
-            level.Points = ValidateIntTextBox(PointsTxb.Text);
+            Level level = new()
+            {
+                Id = ((Level)LevelsLbx.SelectedItem).Id,
+                Name = TextBoxCheckUtil.ValidateStringTextBox(NameTxb.Text),
+                Color = TextBoxCheckUtil.ValidateStringTextBox(ColorTxb.Text),
+                Complexity = TextBoxCheckUtil.ValidateStringTextBox(ComplexityTxb.Text),
+                Height = TextBoxCheckUtil.ValidateIntTextBox(HeightTxb.Text),
+                Weight = TextBoxCheckUtil.ValidateIntTextBox(WeightTxb.Text),
+                Points = TextBoxCheckUtil.ValidateIntTextBox(PointsTxb.Text),
+            };
 
             levelService.Update(level);
 
@@ -77,7 +81,7 @@ namespace Maze.Desktop
 
         private void ArtifactsBtn_Click(object sender, EventArgs e)
         {
-            ArtifactsForm artifactsForm = new ArtifactsForm(this, (Level) LevelsLbx.SelectedItem);
+            ArtifactsForm artifactsForm = new ArtifactsForm(this, ((Level) LevelsLbx.SelectedItem).Id);
             artifactsForm.Show();
             Hide();
         }
@@ -106,42 +110,16 @@ namespace Maze.Desktop
 
         private void DoorsBtn_Click(object sender, EventArgs e)
         {
-            DoorsForm doorsForm = new DoorsForm(this, (Level) LevelsLbx.SelectedItem);
+            DoorsForm doorsForm = new DoorsForm(this, ((Level) LevelsLbx.SelectedItem).Id);
             doorsForm.Show();
             this.Hide();
         }
 
         private void WallsBtn_Click(object sender, EventArgs e)
         {
-            WallsForm wallsForm = new WallsForm(this, (Level)LevelsLbx.SelectedItem);
+            WallsForm wallsForm = new WallsForm(this, ((Level)LevelsLbx.SelectedItem).Id);
             wallsForm.Show();
             this.Hide();
-        }
-
-        private string ValidateStringTextBox(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                throw new Exception("Text box must be filled");
-            }
-            else
-            {
-                return text;
-            }
-        }
-
-        private int ValidateIntTextBox(string text)
-        {
-            int retNum;
-
-            bool isNum = int.TryParse(text, out retNum);
-
-            if (!isNum)
-            {
-                throw new Exception("Text box must be filled by int");
-            }
-
-            return retNum;
         }
     }
 }

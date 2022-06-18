@@ -9,5 +9,10 @@ namespace Maze.Entity
     public abstract class BaseEntity<TKey>
     {
         public TKey Id { get; set; }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 }

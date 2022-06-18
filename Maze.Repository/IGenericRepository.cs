@@ -7,7 +7,7 @@ namespace Maze.Repository
         IEnumerable<TEntity> GetAll();
         TEntity Read(TKey id);
         void Create(TEntity item);
-        void Delete(TEntity item);
+        void Delete(TKey id);
         void Update(TEntity item);
     }
 }

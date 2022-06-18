@@ -12,7 +12,6 @@ namespace Maze.Entity
         public ArtifactType ArtifactType { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
-        public Level Level { get; set; }
 
         public Artifact()
         {

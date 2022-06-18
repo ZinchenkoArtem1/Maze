@@ -20,7 +20,7 @@ namespace Maze.Service.Impl
 
         public void Delete(Level level)
         {
-            levelRepository.Delete(level);
+            levelRepository.Delete(level.Id);
         }
 
         public Level Read(string id)

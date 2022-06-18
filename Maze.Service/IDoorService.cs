@@ -4,10 +4,9 @@ namespace Maze.Service
 {
     public interface IDoorService
     {
-        void Create(Door door);
-        Door Read(string id);
-        List<Door> GetAll();
-        void Update(Door door);
-        void Delete(Door door);
+        void Create(Door door, string levelId);
+        List<Door> GetAllByLevelId(string levelId);
+        void Update(Door door, string levelId);
+        void Delete(Door door, string levelId);
     }
 }

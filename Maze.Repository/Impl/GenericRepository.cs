@@ -19,7 +19,7 @@ namespace Maze.Repository.Impl
             TEntity entity;
             if(inMemoryDb.TryGetValue(id, out entity))
             {
-                return entity;
+                return (TEntity) entity.Clone();
             }
             else
             {
@@ -29,8 +29,7 @@ namespace Maze.Repository.Impl
 
         public virtual IEnumerable<TEntity> GetAll()
         {
-            //ToDo: check that we get copied values
-            return inMemoryDb.Values;
+            return inMemoryDb.Values.Select(e => (TEntity) e.Clone());
         }
 
         public virtual void Update(TEntity entity)
@@ -44,9 +43,9 @@ namespace Maze.Repository.Impl
             }
         }
 
-        public virtual void Delete(TEntity entity)
+        public virtual void Delete(TKey id)
         {
-            inMemoryDb.Remove(entity.Id);
+            inMemoryDb.Remove(id);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Maze.Entity;
+﻿using Maze.Desktop.Util;
+using Maze.Entity;
 using Maze.Service;
 using Maze.Service.Impl;
 
@@ -7,14 +8,14 @@ namespace Maze.Desktop
     public partial class DoorsForm : Form
     {
         private readonly MenuForm menuForm;
-        private readonly Level level;
+        private readonly string levelId;
         private readonly IDoorService doorService;
 
-        public DoorsForm(MenuForm menuForm, Level level)
+        public DoorsForm(MenuForm menuForm, string levelId)
         {
             InitializeComponent();
             this.menuForm = menuForm;
-            this.level = level;
+            this.levelId = levelId;
             this.doorService = new DoorService();
         }
 
@@ -42,21 +43,20 @@ namespace Maze.Desktop
         private void RefreshDoorsLbx()
         {
             DoorsLbx.DataSource = null;
-            DoorsLbx.DataSource = level.Doors;
+            DoorsLbx.DataSource = doorService.GetAllByLevelId(levelId);
         }
 
         private void CreateDoorBtn_Click(object sender, EventArgs e)
         {
             Door door = new()
             {
-                Color = ValidateStringTextBox(ColorTxb.Text),
-                X = ValidateIntTextBox(WeightTxb.Text),
-                Y = ValidateIntTextBox(HeightTxb.Text),
-                IsOpen = IsOpenCbx.Checked,
-                Level = this.level
+                Color = TextBoxCheckUtil.ValidateStringTextBox(ColorTxb.Text),
+                X = TextBoxCheckUtil.ValidateIntTextBox(WeightTxb.Text),
+                Y = TextBoxCheckUtil.ValidateIntTextBox(HeightTxb.Text),
+                IsOpen = IsOpenCbx.Checked
             };
 
-            doorService.Create(door);
+            doorService.Create(door, levelId);
 
             RefreshDoorsLbx();
             Clear();
@@ -78,8 +78,7 @@ namespace Maze.Desktop
         {
             Door door = (Door)DoorsLbx.SelectedItem;
             
-            level.Doors.Remove(door);
-            doorService.Delete(door);
+            doorService.Delete(door, levelId);
 
             RefreshDoorsLbx();
             Clear();
@@ -87,43 +86,19 @@ namespace Maze.Desktop
 
         private void UpdateDoorBtn_Click(object sender, EventArgs e)
         {
-            Door door = (Door) DoorsLbx.SelectedItem;
+            Door door = new()
+            {
+                Id = ((Door)DoorsLbx.SelectedItem).Id,
+                Color = TextBoxCheckUtil.ValidateStringTextBox(ColorTxb.Text),
+                X = TextBoxCheckUtil.ValidateIntTextBox(WeightTxb.Text),
+                Y = TextBoxCheckUtil.ValidateIntTextBox(HeightTxb.Text),
+                IsOpen = IsOpenCbx.Checked
+            };
 
-            door.Color = ValidateStringTextBox(ColorTxb.Text);
-            door.X = ValidateIntTextBox(WeightTxb.Text);
-            door.Y = ValidateIntTextBox(HeightTxb.Text);
-            door.IsOpen = IsOpenCbx.Checked;
-
-            doorService.Update(door);
+            doorService.Update(door, levelId);
 
             RefreshDoorsLbx();
             Clear();
-        }
-
-        private string ValidateStringTextBox(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                throw new Exception("Text box must be filled");
-            }
-            else
-            {
-                return text;
-            }
-        }
-
-        private int ValidateIntTextBox(string text)
-        {
-            int retNum;
-
-            bool isNum = int.TryParse(text, out retNum);
-
-            if (!isNum)
-            {
-                throw new Exception("Text box must be filled by int");
-            }
-
-            return retNum;
         }
     }
 }

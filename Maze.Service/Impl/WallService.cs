@@ -20,9 +20,9 @@ namespace Maze.Service.Impl
             this.levelService = new LevelService(); 
         }
 
-        public void Create(Wall wall)
+        public void Create(Wall wall, string levelId)
         {
-            Level level = wall.Level;
+            Level level = levelService.Read(levelId);
 
             if (level.Weight < wall.X || level.Height < wall.Y)
             {
@@ -31,27 +31,29 @@ namespace Maze.Service.Impl
             levelService.IsLevelCellFree(level, wall.X, wall.Y);
 
             level.Walls.Add(wall);
+
+            levelService.Update(level);
             wallRepository.Create(wall);
         }
 
-        public void Delete(Wall wall)
+        public void Delete(Wall wall, string levelId)
         {
-            wallRepository.Delete(wall);
+            Level level = levelService.Read(levelId);
+
+            level.Walls.RemoveAll(w => w.Id.Equals(wall.Id));
+
+            levelService.Update(level);
+            wallRepository.Delete(wall.Id);
         }
 
-        public List<Wall> GetAll()
+        public List<Wall> GetAllByLevelId(string levelId)
         {
-            return wallRepository.GetAll().ToList();
+            return levelService.Read(levelId).Walls;
         }
 
-        public Wall Read(string id)
+        public void Update(Wall wall, string levelId)
         {
-            return wallRepository.Read(id);
-        }
-
-        public void Update(Wall wall)
-        {
-            Level level = wall.Level;
+            Level level = levelService.Read(levelId);
 
             if (level.Weight < wall.X || level.Height < wall.Y)
             {
@@ -59,6 +61,10 @@ namespace Maze.Service.Impl
             }
             levelService.IsLevelCellFree(level, wall.X, wall.Y);
 
+            level.Walls.RemoveAll(w => w.Id.Equals(wall.Id));
+            level.Walls.Add(wall);
+
+            levelService.Update(level);
             wallRepository.Update(wall);
         }
     }

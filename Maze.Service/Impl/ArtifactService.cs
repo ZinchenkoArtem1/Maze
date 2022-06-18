@@ -20,9 +20,9 @@ namespace Maze.Service.Impl
             this.levelService = new LevelService();
         }
 
-        public void Create(Artifact artifact)
+        public void Create(Artifact artifact, string levelId)
         {
-            Level level = artifact.Level;
+            Level level = levelService.Read(levelId);
 
             if (level.Weight < artifact.X || level.Height < artifact.Y)
             {
@@ -31,27 +31,28 @@ namespace Maze.Service.Impl
             levelService.IsLevelCellFree(level, artifact.X, artifact.Y);
 
             level.Artifacts.Add(artifact);
+
+            levelService.Update(level);
             artifactRepository.Create(artifact);
         }
 
-        public void Delete(Artifact artifact)
+        public void Delete(Artifact artifact, string levelId)
         {
-            artifactRepository.Delete(artifact);
+            Level level = levelService.Read(levelId);
+            level.Artifacts.RemoveAll(a => a.Id.Equals(artifact.Id));
+
+            levelService.Update(level);
+            artifactRepository.Delete(artifact.Id);
         }
 
-        public List<Artifact> GetAll()
+        public List<Artifact> GetAllByLevelId(string levelId)
         {
-            return artifactRepository.GetAll().ToList();
+            return levelService.Read(levelId).Artifacts;
         }
 
-        public Artifact Read(string id)
+        public void Update(Artifact artifact, string levelId)
         {
-            return artifactRepository.Read(id);
-        }
-
-        public void Update(Artifact artifact)
-        {
-            Level level = artifact.Level;
+            Level level = levelService.Read(levelId);
 
             if (level.Weight < artifact.X || level.Height < artifact.Y)
             {
@@ -59,7 +60,11 @@ namespace Maze.Service.Impl
             }
             levelService.IsLevelCellFree(level, artifact.X, artifact.Y);
 
+            level.Artifacts.RemoveAll(a => a.Id.Equals(artifact.Id));
+            level.Artifacts.Add(artifact);
+
             artifactRepository.Update(artifact);
+            levelService.Update(level);
         }
     }
 }

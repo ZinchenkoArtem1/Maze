@@ -4,10 +4,9 @@ namespace Maze.Service
 {
     public interface IArtifactService
     {
-        void Create(Artifact artifact);
-        Artifact Read(string id);
-        List<Artifact> GetAll();
-        void Update(Artifact artifact);
-        void Delete(Artifact artifact);
+        void Create(Artifact artifact, string levelId);
+        List<Artifact> GetAllByLevelId(string levelId);
+        void Update(Artifact artifact, string levelId);
+        void Delete(Artifact artifact, string levelId);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Maze.Entity;
+﻿using Maze.Desktop.Util;
+using Maze.Entity;
 using Maze.Service;
 using Maze.Service.Impl;
 using System;
@@ -16,14 +17,14 @@ namespace Maze.Desktop
     public partial class WallsForm : Form
     {
         private readonly MenuForm menuForm;
-        private readonly Level level;
+        private readonly string levelId;
         private readonly IWallService wallService;
 
-        public WallsForm(MenuForm menuForm, Level level)
+        public WallsForm(MenuForm menuForm, string levelId)
         {
             InitializeComponent();
             this.menuForm = menuForm;
-            this.level = level;
+            this.levelId = levelId;
             this.wallService = new WallService();
         }
 
@@ -51,21 +52,20 @@ namespace Maze.Desktop
         private void RefreshDoorsLbx()
         {
             WallsLbx.DataSource = null;
-            WallsLbx.DataSource = level.Walls;
+            WallsLbx.DataSource = wallService.GetAllByLevelId(levelId);
         }
 
         private void CreateWallBtn_Click(object sender, EventArgs e)
         {
             Wall wall = new()
             {
-                Color = ValidateStringTextBox(ColorTxb.Text),
-                X = ValidateIntTextBox(WeightTxb.Text),
-                Y = ValidateIntTextBox(HeightTxb.Text),
-                IsDanger = IsDangerCbx.Checked,
-                Level = this.level
+                Color = TextBoxCheckUtil.ValidateStringTextBox(ColorTxb.Text),
+                X = TextBoxCheckUtil.ValidateIntTextBox(WeightTxb.Text),
+                Y = TextBoxCheckUtil.ValidateIntTextBox(HeightTxb.Text),
+                IsDanger = IsDangerCbx.Checked
             };
 
-            wallService.Create(wall);
+            wallService.Create(wall, levelId);
 
             RefreshDoorsLbx();
             Clear();
@@ -87,8 +87,7 @@ namespace Maze.Desktop
         {
             Wall wall = (Wall)WallsLbx.SelectedItem;
 
-            level.Walls.Remove(wall);
-            wallService.Delete(wall);
+            wallService.Delete(wall, levelId);
 
             RefreshDoorsLbx();
             Clear();
@@ -96,43 +95,19 @@ namespace Maze.Desktop
 
         private void UpdateWallBtn_Click(object sender, EventArgs e)
         {
-            Wall wall = (Wall)WallsLbx.SelectedItem;
+            Wall wall = new()
+            {
+                Id = ((Wall)WallsLbx.SelectedItem).Id,
+                Color = TextBoxCheckUtil.ValidateStringTextBox(ColorTxb.Text),
+                X = TextBoxCheckUtil.ValidateIntTextBox(WeightTxb.Text),
+                Y = TextBoxCheckUtil.ValidateIntTextBox(HeightTxb.Text),
+                IsDanger = IsDangerCbx.Checked
+            };
 
-            wall.Color = ValidateStringTextBox(ColorTxb.Text);
-            wall.X = ValidateIntTextBox(WeightTxb.Text);
-            wall.Y = ValidateIntTextBox(HeightTxb.Text);
-            wall.IsDanger = IsDangerCbx.Checked;
-
-            wallService.Update(wall);
+            wallService.Update(wall, levelId);
 
             RefreshDoorsLbx();
             Clear();
-        }
-
-        private string ValidateStringTextBox(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                throw new Exception("Text box must be filled");
-            }
-            else
-            {
-                return text;
-            }
-        }
-
-        private int ValidateIntTextBox(string text)
-        {
-            int retNum;
-
-            bool isNum = int.TryParse(text, out retNum);
-
-            if (!isNum)
-            {
-                throw new Exception("Text box must be filled by int");
-            }
-
-            return retNum;
         }
     }
 }
