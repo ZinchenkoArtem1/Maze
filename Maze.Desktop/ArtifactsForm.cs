@@ -32,9 +32,16 @@ namespace Maze.Desktop
 
         private void CreateArtifactBtn_Click(object sender, EventArgs e)
         {
+            ArtifactType selectedArtifactType = (ArtifactType) ArtifactTypesLbx.SelectedItem;
+
+            if (selectedArtifactType == null)
+            {
+                throw new ArgumentException("You must select artifact type");
+            }
+
             Artifact artifact = new()
             {
-                ArtifactType = (ArtifactType)ArtifactTypesLbx.SelectedItem,                
+                ArtifactType = selectedArtifactType,                
                 X = TextBoxCheckUtil.ValidateIntTextBox(WeightTxb.Text),
                 Y = TextBoxCheckUtil.ValidateIntTextBox(HeightTxb.Text)
             };
@@ -47,20 +54,26 @@ namespace Maze.Desktop
 
         private void ArtifactsLbx_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Artifact artifact = (Artifact) ArtifactsLbx.SelectedItem;
-            if (artifact != null)
+            Artifact selectedArtifact = (Artifact) ArtifactsLbx.SelectedItem;
+
+            if (selectedArtifact != null)
             {
-                ArtifactTypesLbx.SelectedItem = artifact.ArtifactType;
-                HeightTxb.Text = artifact.Y.ToString();
-                WeightTxb.Text = artifact.X.ToString();
+                ArtifactTypesLbx.SelectedItem = selectedArtifact.ArtifactType;
+                HeightTxb.Text = selectedArtifact.Y.ToString();
+                WeightTxb.Text = selectedArtifact.X.ToString();
             }
         }
 
         private void RemoveArtifactBtn_Click(object sender, EventArgs e)
         {
-            Artifact artifact = (Artifact)ArtifactsLbx.SelectedItem;
+            Artifact selectedArtifact = (Artifact)ArtifactsLbx.SelectedItem;
 
-            artifactService.Delete(artifact, levelId);
+            if (selectedArtifact == null)
+            {
+                throw new ArgumentException("You must select artifact");
+            }
+
+            artifactService.Delete(selectedArtifact, levelId);
 
             RefreshArtifactsLbx();
             Clear();
@@ -68,10 +81,23 @@ namespace Maze.Desktop
 
         private void UpdateArtifactBtn_Click(object sender, EventArgs e)
         {
+            Artifact selectedArtifact = (Artifact)ArtifactsLbx.SelectedItem;
+            ArtifactType selectedArtifactType = (ArtifactType)ArtifactTypesLbx.SelectedItem;
+
+            if (selectedArtifact == null)
+            {
+                throw new ArgumentException("You must select artifact");
+            }
+
+            if (selectedArtifactType == null)
+            {
+                throw new ArgumentException("You must select artifact type");
+            }
+
             Artifact artifact = new()
             {
-                Id = ((Artifact) ArtifactsLbx.SelectedItem).Id,
-                ArtifactType = (ArtifactType) ArtifactTypesLbx.SelectedItem,
+                Id = selectedArtifact.Id,
+                ArtifactType = selectedArtifactType,
                 X = TextBoxCheckUtil.ValidateIntTextBox(WeightTxb.Text),
                 Y = TextBoxCheckUtil.ValidateIntTextBox(HeightTxb.Text)
             };

@@ -23,7 +23,6 @@ namespace Maze.Desktop
 
         private void CreateLevelBtn_Click(object sender, EventArgs e)
         {
-            
             levelService.Create(new Level
             {
                 Name = TextBoxCheckUtil.ValidateStringTextBox(NameTxb.Text),
@@ -40,21 +39,29 @@ namespace Maze.Desktop
 
         private void LevelsLbx_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Level level = (Level) LevelsLbx.SelectedItem;
-            if (level != null)
+            Level selectedLevel = (Level) LevelsLbx.SelectedItem;
+
+            if (selectedLevel != null)
             {
-                NameTxb.Text = level.Name;
-                ColorTxb.Text = level.Color;
-                ComplexityTxb.Text = level.Complexity;
-                HeightTxb.Text = level.Height.ToString();
-                WeightTxb.Text = level.Weight.ToString();
-                PointsTxb.Text = level.Points.ToString();
+                NameTxb.Text = selectedLevel.Name;
+                ColorTxb.Text = selectedLevel.Color;
+                ComplexityTxb.Text = selectedLevel.Complexity;
+                HeightTxb.Text = selectedLevel.Height.ToString();
+                WeightTxb.Text = selectedLevel.Weight.ToString();
+                PointsTxb.Text = selectedLevel.Points.ToString();
             }
         }
 
         private void RemoveLevelBtn_Click(object sender, EventArgs e)
         {
-            levelService.Delete((Level) LevelsLbx.SelectedItem);
+            Level selectedLevel = (Level)LevelsLbx.SelectedItem;
+
+            if (selectedLevel == null)
+            {
+                throw new ArgumentException("You must select level");
+            }
+
+            levelService.Delete(selectedLevel);
 
             RefreshLevelsLbx();
             Clear();
@@ -62,9 +69,16 @@ namespace Maze.Desktop
 
         private void UpdateLevelBtn_Click(object sender, EventArgs e)
         {
+            Level selectedLevel = (Level)LevelsLbx.SelectedItem;
+
+            if (selectedLevel == null)
+            {
+                throw new ArgumentException("You must select level");
+            }
+
             Level level = new()
             {
-                Id = ((Level)LevelsLbx.SelectedItem).Id,
+                Id = selectedLevel.Id,
                 Name = TextBoxCheckUtil.ValidateStringTextBox(NameTxb.Text),
                 Color = TextBoxCheckUtil.ValidateStringTextBox(ColorTxb.Text),
                 Complexity = TextBoxCheckUtil.ValidateStringTextBox(ComplexityTxb.Text),
@@ -81,7 +95,14 @@ namespace Maze.Desktop
 
         private void ArtifactsBtn_Click(object sender, EventArgs e)
         {
-            ArtifactsForm artifactsForm = new ArtifactsForm(this, ((Level) LevelsLbx.SelectedItem).Id);
+            Level selectedLevel = (Level)LevelsLbx.SelectedItem;
+
+            if (selectedLevel == null)
+            {
+                throw new ArgumentException("You must select level");
+            }
+
+            ArtifactsForm artifactsForm = new ArtifactsForm(this, selectedLevel.Id);
             artifactsForm.Show();
             Hide();
         }
@@ -110,14 +131,28 @@ namespace Maze.Desktop
 
         private void DoorsBtn_Click(object sender, EventArgs e)
         {
-            DoorsForm doorsForm = new DoorsForm(this, ((Level) LevelsLbx.SelectedItem).Id);
+            Level selectedLevel = (Level)LevelsLbx.SelectedItem;
+
+            if (selectedLevel == null)
+            {
+                throw new ArgumentException("You must select level");
+            }
+
+            DoorsForm doorsForm = new DoorsForm(this, selectedLevel.Id);
             doorsForm.Show();
             this.Hide();
         }
 
         private void WallsBtn_Click(object sender, EventArgs e)
         {
-            WallsForm wallsForm = new WallsForm(this, ((Level)LevelsLbx.SelectedItem).Id);
+            Level selectedLevel = (Level)LevelsLbx.SelectedItem;
+
+            if (selectedLevel == null)
+            {
+                throw new ArgumentException("You must select level");
+            }
+
+            WallsForm wallsForm = new WallsForm(this, selectedLevel.Id);
             wallsForm.Show();
             this.Hide();
         }

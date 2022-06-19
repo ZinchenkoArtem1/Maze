@@ -64,21 +64,27 @@ namespace Maze.Desktop
 
         private void DoorsLbx_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Door door = (Door) DoorsLbx.SelectedItem;
-            if (door != null)
+            Door selectedDoor = (Door) DoorsLbx.SelectedItem;
+
+            if (selectedDoor != null)
             {
-                ColorTxb.Text = door.Color;
-                HeightTxb.Text = door.Y.ToString();
-                WeightTxb.Text = door.X.ToString();
-                IsOpenCbx.Checked = door.IsOpen;
+                ColorTxb.Text = selectedDoor.Color;
+                HeightTxb.Text = selectedDoor.Y.ToString();
+                WeightTxb.Text = selectedDoor.X.ToString();
+                IsOpenCbx.Checked = selectedDoor.IsOpen;
             }
         }
 
         private void RemoveDoorBtn_Click(object sender, EventArgs e)
         {
-            Door door = (Door)DoorsLbx.SelectedItem;
+            Door selectedDoor = (Door)DoorsLbx.SelectedItem;
+
+            if (selectedDoor == null)
+            {
+                throw new ArgumentException("You must select door");
+            }
             
-            doorService.Delete(door, levelId);
+            doorService.Delete(selectedDoor, levelId);
 
             RefreshDoorsLbx();
             Clear();
@@ -86,9 +92,16 @@ namespace Maze.Desktop
 
         private void UpdateDoorBtn_Click(object sender, EventArgs e)
         {
+            Door selectedDoor = (Door)DoorsLbx.SelectedItem;
+
+            if (selectedDoor == null)
+            {
+                throw new ArgumentException("You must select door");
+            }
+
             Door door = new()
             {
-                Id = ((Door)DoorsLbx.SelectedItem).Id,
+                Id = selectedDoor.Id,
                 Color = TextBoxCheckUtil.ValidateStringTextBox(ColorTxb.Text),
                 X = TextBoxCheckUtil.ValidateIntTextBox(WeightTxb.Text),
                 Y = TextBoxCheckUtil.ValidateIntTextBox(HeightTxb.Text),

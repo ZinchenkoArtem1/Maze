@@ -36,8 +36,8 @@ namespace Maze.Desktop
 
         private void WallsForm_Load(object sender, EventArgs e)
         {
+            RefreshWallsLbx();
             Clear();
-            RefreshDoorsLbx();
         }
 
         private void Clear()
@@ -49,7 +49,7 @@ namespace Maze.Desktop
             WallsLbx.SelectedItem = null;
         }
 
-        private void RefreshDoorsLbx()
+        private void RefreshWallsLbx()
         {
             WallsLbx.DataSource = null;
             WallsLbx.DataSource = wallService.GetAllByLevelId(levelId);
@@ -67,37 +67,50 @@ namespace Maze.Desktop
 
             wallService.Create(wall, levelId);
 
-            RefreshDoorsLbx();
+            RefreshWallsLbx();
             Clear();
         }
 
         private void WallsLbx_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Wall wall = (Wall)WallsLbx.SelectedItem;
-            if (wall != null)
+            Wall selectedWall = (Wall)WallsLbx.SelectedItem;
+
+            if (selectedWall != null)
             {
-                ColorTxb.Text = wall.Color;
-                HeightTxb.Text = wall.Y.ToString();
-                WeightTxb.Text = wall.X.ToString();
-                IsDangerCbx.Checked = wall.IsDanger;
+                ColorTxb.Text = selectedWall.Color;
+                HeightTxb.Text = selectedWall.Y.ToString();
+                WeightTxb.Text = selectedWall.X.ToString();
+                IsDangerCbx.Checked = selectedWall.IsDanger;
             }
         }
 
         private void RemoveWallBtn_Click(object sender, EventArgs e)
         {
-            Wall wall = (Wall)WallsLbx.SelectedItem;
+            Wall selectedWall = (Wall)WallsLbx.SelectedItem;
 
-            wallService.Delete(wall, levelId);
+            if (selectedWall == null)
+            {
+                throw new ArgumentException("You must select wall");
+            }
 
-            RefreshDoorsLbx();
+            wallService.Delete(selectedWall, levelId);
+
+            RefreshWallsLbx();
             Clear();
         }
 
         private void UpdateWallBtn_Click(object sender, EventArgs e)
         {
+            Wall selectedWall = (Wall)WallsLbx.SelectedItem;
+
+            if (selectedWall == null)
+            {
+                throw new ArgumentException("You must select wall");
+            }
+
             Wall wall = new()
             {
-                Id = ((Wall)WallsLbx.SelectedItem).Id,
+                Id = selectedWall.Id,
                 Color = TextBoxCheckUtil.ValidateStringTextBox(ColorTxb.Text),
                 X = TextBoxCheckUtil.ValidateIntTextBox(WeightTxb.Text),
                 Y = TextBoxCheckUtil.ValidateIntTextBox(HeightTxb.Text),
@@ -106,7 +119,7 @@ namespace Maze.Desktop
 
             wallService.Update(wall, levelId);
 
-            RefreshDoorsLbx();
+            RefreshWallsLbx();
             Clear();
         }
     }

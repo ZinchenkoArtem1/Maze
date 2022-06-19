@@ -171,6 +171,7 @@
             this.Controls.Add(this.IsDangerCbx);
             this.Name = "WallsForm";
             this.Text = "WallsForm";
+            this.Load += new System.EventHandler(this.WallsForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
